@@ -1,0 +1,126 @@
+﻿Build1=Default,b4a.example
+File1=layout1.bal
+FileGroup1=Default Group
+Group=Default Group
+Library1=core
+Library2=network
+Library3=randomaccessfile
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="5" android:targetSdkVersion="30"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~'End of default text.~\n~
+Module1=Starter
+NumberOfFiles=1
+NumberOfLibraries=3
+NumberOfModules=1
+Version=10.9
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: B4A Example
+	#VersionCode: 1
+	#VersionName: 
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: unspecified
+	#CanInstallToExternalStorage: False
+	#AdditionalJar: jtds-1.3.1.jar
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: false
+	
+#End Region
+
+Sub Process_Globals
+	'Private streamer As AudioStreamer
+	
+	Dim AStreams As AsyncStreams
+ 
+	Dim C1 As Socket
+	
+	Type Message (Name As String, Age As Int)
+End Sub
+
+Sub Globals
+	'These global variables will be redeclared each time the activity is created.
+	'These variables can only be accessed from this module.
+
+	Private EditText1 As EditText
+	Private EditText2 As EditText
+	Private Button1 As Button
+	Private Button2 As Button
+	Private EditText3 As EditText
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	'Do not forget to load the layout file created with the visual designer. For example:
+	Activity.LoadLayout("layout1")
+	'CallSub3(Starter, "Beep", 1000, 400)
+	
+ 
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
+
+
+Sub Service_Create
+	'streamer.Initialize("streamer", 8000, True, 16, streamer.VOLUME_MUSIC)
+	'streamer.StartPlaying
+End Sub
+
+
+Sub Button1_Click
+	Log("test")
+	
+	'uf_save
+		
+	C1.close
+	AStreams.Close
+		
+	'印表機先連線
+	C1.Initialize("C1")
+	C1.Connect( EditText1.Text  , 5500 , 10000) '100=Printer address, 9100=Port number (please look up port number)
+	
+	 
+End Sub
+ 
+
+
+Sub C1_Connected (Successful As Boolean)
+	Log(Successful)
+	If Successful Then
+
+		AStreams.Initialize(C1.InputStream, C1.OutputStream, "AStreams")
+				
+		'CallSub(Null, uf_prints1)
+
+		ToastMessageShow( "連線OK", True)
+	Else
+		ToastMessageShow( "連線不成功??請先檢查印表機", True)
+	End If
+End Sub
+
+Sub uf_prints1
+	Dim SendMsg="" As String
+
+
+	'ln_num = edtC_02.Text
+	SendMsg = SendMsg & "中文"
+
+	'edtC_01.Text = SendMsg
+
+	AStreams.Write(SendMsg.GetBytes("utf-8"))
+End Sub
+
+Private Sub Button2_Click
+	Dim m As Message
+	m.Age = 99
+	m.Name = EditText2.Text
+	Dim ser As B4XSerializator
+	AStreams.Write(ser.ConvertObjectToBytes(m))
+
+	'AStreams.Write(SendMsg.GetBytes("utf-8"))
+End Sub
